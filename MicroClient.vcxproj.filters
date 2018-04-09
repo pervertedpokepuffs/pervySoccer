@@ -45,6 +45,9 @@
     <ClCompile Include="TParseString.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="basicMovement.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MicroClient.rc">
@@ -86,6 +89,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TParseString.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="basicMovement.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
