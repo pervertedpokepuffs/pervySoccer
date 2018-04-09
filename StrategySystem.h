@@ -15,12 +15,12 @@ public:
 
 #ifdef _DEBUG
 #endif // _DEBUG
-private:
+public:
 	void Stop(int which);
 	void Position(int which, CPoint point);
-	void NormalGame();
 	void Velocity(int which, int vL, int vR);
 	void Angle(int which, int desired_angle);
+private:
 	void Goalie(int which);
 	CRect       boundRect;     
 	int m_nStrategy;
@@ -53,9 +53,9 @@ private:
 	void NormalGame3();
 	void NormalGame2();
 	void NormalGame1();
+	void NormalGame();
 public:
 	int command[35];
-private:
 	// write a file to store whatever
 	void write2File(char *filename, char *message);
 };
