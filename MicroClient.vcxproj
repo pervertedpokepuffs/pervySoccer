@@ -143,7 +143,6 @@
   <ItemGroup>
     <ClCompile Include="Agentsock.cpp" />
     <ClCompile Include="BaseAgent.cpp" />
-    <ClCompile Include="basicMovement.cpp" />
     <ClCompile Include="DSetupDlg.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="MicroClient.cpp" />
@@ -162,7 +161,6 @@
   <ItemGroup>
     <ClInclude Include="Agentsock.h" />
     <ClInclude Include="BaseAgent.h" />
-    <ClInclude Include="basicMovement.h" />
     <ClInclude Include="DSetupDlg.h" />
     <ClInclude Include="general.h" />
     <ClInclude Include="MainFrm.h" />

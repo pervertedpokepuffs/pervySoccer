@@ -1,17 +1,10 @@
 #include "StdAfx.h"
 #include "StrategySystem.h"
-#include <cstdio>
-#include <chrono>
-#include <fstream>
-#include <sstream>
 
 IMPLEMENT_DYNAMIC(CStrategySystem, CObject)
 
-extern int nKick;
-extern int test_state = 0;
-extern auto t1 = std::chrono::high_resolution_clock::now();
-extern CPoint old_ball = { 0,0 };
-
+extern int nKick, test_state = 0;
+extern CPoint old_ball = {0,0};
 #define  BALL_WIDTH		78
 #define  BALL_LENGTH	156 
 #define  BALL_DIS	    26 
@@ -72,77 +65,52 @@ CStrategySystem::CStrategySystem(int id)
 
 CStrategySystem::~CStrategySystem()
 {
-	
+
 }
 
 void CStrategySystem::Action()
 {
-	old_ball = ball.position;
 	Think();
 }
 
 void CStrategySystem::Think()
 {
-	if (test_state < 1)
-	{
-		NormalGame();
-	}
-	else if (test_state < 2)
-	{
-		NormalGame1();
-	}
-	else NormalGame2();
+	(test_state < 1) ? NormalGame() : NormalGame1();
+	NormalGame2();
 }
+
 
 void CStrategySystem::NormalGame()
 {
+	old_ball = ball.position;
 	Position(HOME1, ball.position);
-	Goalie(HGOALIE);
-	t1 = std::chrono::high_resolution_clock::now();
+	while (home1.position != old_ball)
+	{
+		Position(HOME1, old_ball);
+	}
 	++test_state;
+
 }
 
 void CStrategySystem::NormalGame1()
 {
 	Stop(HOME1);
-	++test_state;
 }
 
 void CStrategySystem::NormalGame2()
 {
-	double acceleration, distance_e, dx, dy, ix = ball.position.x, iy = ball.position.y;
-	auto t2 = std::chrono::high_resolution_clock::now();
-	auto time_spent = std::chrono::duration<double>(t2 - t1);
-	double elapsed_time = time_spent.count();
-
-	dx = ix - ball.position.x;
-	dy = iy - ball.position.y;
-	distance_e = sqrt(dx * dx + dy * dy);
-	acceleration = distance_e / elapsed_time;
 	
-	std::string str = std::to_string(acceleration);
-	char acceleration_string[sizeof(str) + 1];
-	str.copy(acceleration_string, str.length() + 1);
-
-	write2File("balla.txt", acceleration_string);
-	++test_state;
 }
 
 void CStrategySystem::NormalGame3()
 {
-	
+
 }
 
 void CStrategySystem::NormalGame4()
 {
 	
 }
-
-void CStrategySystem::NormalGame5() //Start Phase
-{
-	
-}
-
 
 void CStrategySystem::Angle(int which, int desired_angle)
 {
@@ -572,16 +540,4 @@ void CStrategySystem::Goalie(int which)
 		Position(which, CPoint(target.x,target.y));
 	else 
 		Angle(which, 90);
-}
-
-
-// write a file to store whatever
-void CStrategySystem::write2File(char *filename, char *message)
-{
-	// TODO: Add your implementation code here.
-	std::ofstream outfile;
-
-	outfile.open(filename, std::ios::app);
-	outfile << message << std::endl;
-	outfile.close();
 }
