@@ -659,5 +659,5 @@ void CStrategySystem::idleStop(int which)
 	}
 
 	vL = vR = 0;
-	if (busy_state == 0) Velocity(which, vL, vR);
+	if (busy_state == IDLE) Velocity(which, vL, vR);
 }
