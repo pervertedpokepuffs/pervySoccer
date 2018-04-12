@@ -55,6 +55,9 @@ private:
 public:
 	int command[35]; 
 	
+private:
+	void faceBall(int which);
+	void idleStop(int which);
 };
 
 #endif // _INSIDE_VISUAL_CPP_STRATEGYSYSTEM
