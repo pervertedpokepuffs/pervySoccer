@@ -1,17 +1,9 @@
 #include "StdAfx.h"
 #include "StrategySystem.h"
-#include <cstdio>
-#include <chrono>
-#include <fstream>
-#include <sstream>
 
 IMPLEMENT_DYNAMIC(CStrategySystem, CObject)
 
-extern int nKick;
-extern int test_state = 0;
-extern auto t1 = std::chrono::high_resolution_clock::now();
-extern CPoint old_ball = { 0,0 };
-
+extern int nKick, test_state = 0, busy_state[11] = { 0,0,0,0,0,0,0,0,0,0,0 };
 #define  BALL_WIDTH		78
 #define  BALL_LENGTH	156 
 #define  BALL_DIS	    26 
@@ -25,8 +17,8 @@ CStrategySystem::CStrategySystem(int id)
 		m_nGameArea=GAME_LEFT;
 	else
 		m_nGameArea=GAME_RIGHT;
-	for(int i=0;i<35;i++)
-		command[i]=0;
+	for (int i = 0; i < 35; i++)
+		command[i] = 0;
 	C_Home1.Data.Lv=0;
 	C_Home1.Data.Rv=0;
 	C_Home1.Data.Command=C_STOP;
@@ -72,77 +64,54 @@ CStrategySystem::CStrategySystem(int id)
 
 CStrategySystem::~CStrategySystem()
 {
-	
+
 }
 
 void CStrategySystem::Action()
 {
-	old_ball = ball.position;
 	Think();
 }
 
 void CStrategySystem::Think()
 {
-	if (test_state < 1)
-	{
-		NormalGame();
-	}
-	else if (test_state < 2)
-	{
-		NormalGame1();
-	}
-	else NormalGame2();
+	NormalGame();
 }
+
 
 void CStrategySystem::NormalGame()
 {
-	Position(HOME1, ball.position);
-	Goalie(HGOALIE);
-	t1 = std::chrono::high_resolution_clock::now();
-	++test_state;
+	faceBall(HOME1);
+	faceBall(HOME2);
+	faceBall(HOME3);
+	faceBall(HOME4);
+	faceBall(HOME5);
+	faceBall(HOME6);
+	faceBall(HOME7);
+	faceBall(HOME8);
+	faceBall(HOME9);
+	faceBall(HOME10);
+	faceBall(HGOALIE);
 }
 
 void CStrategySystem::NormalGame1()
 {
-	Stop(HOME1);
-	++test_state;
+	
 }
 
 void CStrategySystem::NormalGame2()
 {
-	double acceleration, distance_e, dx, dy, ix = ball.position.x, iy = ball.position.y;
-	auto t2 = std::chrono::high_resolution_clock::now();
-	auto time_spent = std::chrono::duration<double>(t2 - t1);
-	double elapsed_time = time_spent.count();
-
-	dx = ix - ball.position.x;
-	dy = iy - ball.position.y;
-	distance_e = sqrt(dx * dx + dy * dy);
-	acceleration = distance_e / elapsed_time;
 	
-	std::string str = std::to_string(acceleration);
-	char acceleration_string[sizeof(str) + 1];
-	str.copy(acceleration_string, str.length() + 1);
-
-	write2File("balla.txt", acceleration_string);
-	++test_state;
 }
 
 void CStrategySystem::NormalGame3()
 {
-	
+
 }
 
 void CStrategySystem::NormalGame4()
 {
 	
 }
-
-void CStrategySystem::NormalGame5() //Start Phase
-{
-	
-}
-
 
 void CStrategySystem::Angle(int which, int desired_angle)
 {
@@ -574,14 +543,121 @@ void CStrategySystem::Goalie(int which)
 		Angle(which, 90);
 }
 
+//Definitions of busystate
+#define IDLE 0
+#define FACEBALL 1
+#define KICKBALL 2
 
-// write a file to store whatever
-void CStrategySystem::write2File(char *filename, char *message)
+void CStrategySystem::faceBall(int which)
+{
+	Robot2 *robot;
+	int theta_e, dy, dx, desired_angle;
+
+	switch (which) {
+	case HOME1:
+		robot = &home1;
+		break;
+	case HOME2:
+		robot = &home2;
+		break;
+	case HOME3:
+		robot = &home3;
+		break;
+	case HOME4:
+		robot = &home4;
+		break;
+	case HOME5:
+		robot = &home5;
+		break;
+	case HOME6:
+		robot = &home6;
+		break;
+	case HOME7:
+		robot = &home7;
+		break;
+	case HOME8:
+		robot = &home8;
+		break;
+	case HOME9:
+		robot = &home9;
+		break;
+	case HOME10:
+		robot = &home10;
+		break;
+	case HGOALIE:
+		robot = &hgoalie;
+		break;
+	}
+
+	dx = ball.position.x - robot->position.x;
+	dy = ball.position.y - robot->position.y;
+
+	if (dx == 0 && dy == 0)
+		desired_angle = 90;
+	else
+		desired_angle = (int)(180.0 / M_PI * atan2((double)(dy), (double)(dx)));
+
+	theta_e = desired_angle - robot->angle;
+
+	while (theta_e > 180)
+		theta_e -= 360;
+	while (theta_e < -180)
+		theta_e += 360;
+
+	if (busy_state[which - 1] == IDLE || busy_state[which - 1] == FACEBALL)
+	{
+		Angle(which, theta_e);
+		busy_state[which - 1] = FACEBALL;
+	}
+	else if (busy_state[which - 1] != IDLE && theta_e == 0)
+	{
+		busy_state[which - 1] = IDLE;
+	}
+}
+
+
+void CStrategySystem::idleStop(int which)
 {
 	// TODO: Add your implementation code here.
-	std::ofstream outfile;
+	Robot2 *robot;
+	int vL, vR;
 
-	outfile.open(filename, std::ios::app);
-	outfile << message << std::endl;
-	outfile.close();
+	switch (which) {
+	case HOME1:
+		robot = &home1;
+		break;
+	case HOME2:
+		robot = &home2;
+		break;
+	case HOME3:
+		robot = &home3;
+		break;
+	case HOME4:
+		robot = &home4;
+		break;
+	case HOME5:
+		robot = &home5;
+		break;
+	case HOME6:
+		robot = &home6;
+		break;
+	case HOME7:
+		robot = &home7;
+		break;
+	case HOME8:
+		robot = &home8;
+		break;
+	case HOME9:
+		robot = &home9;
+		break;
+	case HOME10:
+		robot = &home10;
+		break;
+	case HGOALIE:
+		robot = &hgoalie;
+		break;
+	}
+
+	vL = vR = 0;
+	if (busy_state == 0) Velocity(which, vL, vR);
 }

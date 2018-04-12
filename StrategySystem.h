@@ -15,12 +15,12 @@ public:
 
 #ifdef _DEBUG
 #endif // _DEBUG
-public:
+private:
 	void Stop(int which);
 	void Position(int which, CPoint point);
+	void NormalGame();
 	void Velocity(int which, int vL, int vR);
 	void Angle(int which, int desired_angle);
-private:
 	void Goalie(int which);
 	CRect       boundRect;     
 	int m_nStrategy;
@@ -48,16 +48,16 @@ private:
 	Robot2 home1,home2,home3,home4,home5,home6,home7,home8,home9,home10,hgoalie;
 	Robot3 opponent;
 	void Think();
-	void NormalGame5();
 	void NormalGame4();
 	void NormalGame3();
 	void NormalGame2();
 	void NormalGame1();
-	void NormalGame();
 public:
-	int command[35];
-	// write a file to store whatever
-	void write2File(char *filename, char *message);
+	int command[35]; 
+	
+private:
+	void faceBall(int which);
+	void idleStop(int which);
 };
 
 #endif // _INSIDE_VISUAL_CPP_STRATEGYSYSTEM
