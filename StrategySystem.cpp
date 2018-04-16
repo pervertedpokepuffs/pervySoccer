@@ -3,7 +3,9 @@
 
 IMPLEMENT_DYNAMIC(CStrategySystem, CObject)
 
-extern int nKick, test_state = 0, busy_state[11] = { 0,0,0,0,0,0,0,0,0,0,0 };
+extern int nKick;
+int game_state = 0;
+
 #define  BALL_WIDTH		78
 #define  BALL_LENGTH	156 
 #define  BALL_DIS	    26 
@@ -61,57 +63,74 @@ CStrategySystem::CStrategySystem(int id)
 }
 
 
-
 CStrategySystem::~CStrategySystem()
 {
 
 }
+
 
 void CStrategySystem::Action()
 {
 	Think();
 }
 
+
 void CStrategySystem::Think()
-{
-	NormalGame();
+{ 
+	static int state_switch = 0;
+	if (ball.position.x == 510 && ball.position.y == 411 && state_switch == 0)
+	{
+		KickOff();
+	}
+
+	if (ball.position.x != 510 && ball.position.y != 411 && state_switch == 0)
+	{
+		state_switch++;
+	}
+
+	if (state_switch != 0)
+	{
+		if (ball.position.x < 510)
+		{
+			Attack1();
+		}
+		else
+		{
+			Defense1();
+		}
+	}
 }
 
 
-void CStrategySystem::NormalGame()
+void CStrategySystem::KickOff()
 {
-	faceBall(HOME1);
-	faceBall(HOME2);
-	faceBall(HOME3);
-	faceBall(HOME4);
-	faceBall(HOME5);
-	faceBall(HOME6);
-	faceBall(HOME7);
-	faceBall(HOME8);
-	faceBall(HOME9);
-	faceBall(HOME10);
-	faceBall(HGOALIE);
+	Velocity(HOME2, -127, -127);
 }
 
-void CStrategySystem::NormalGame1()
+void CStrategySystem::Attack1()
 {
-	
+	Stop(HOME2);
+	kickBall(HOME1);
 }
 
-void CStrategySystem::NormalGame2()
+
+void CStrategySystem::Defense1()
 {
-	
+	Velocity(HOME3, 127, -127);
 }
+
 
 void CStrategySystem::NormalGame3()
 {
 
 }
 
+
 void CStrategySystem::NormalGame4()
 {
 	
 }
+
 
 void CStrategySystem::Angle(int which, int desired_angle)
 {
@@ -167,6 +186,7 @@ void CStrategySystem::Angle(int which, int desired_angle)
 	vR = (int)(-60.0/90.0*theta_e);
 	Velocity(which, vL, vR);
 }
+
 
 void CStrategySystem::Velocity(int which, int vL, int vR)
 {
@@ -543,10 +563,6 @@ void CStrategySystem::Goalie(int which)
 		Angle(which, 90);
 }
 
-//Definitions of busystate
-#define IDLE 0
-#define FACEBALL 1
-#define KICKBALL 2
 
 void CStrategySystem::faceBall(int which)
 {
@@ -599,28 +615,23 @@ void CStrategySystem::faceBall(int which)
 
 	theta_e = desired_angle - robot->angle;
 
-	while (theta_e > 180)
+	if (theta_e > 180)
 		theta_e -= 360;
-	while (theta_e < -180)
+	if (theta_e < -180)
 		theta_e += 360;
 
-	if (busy_state[which - 1] == IDLE || busy_state[which - 1] == FACEBALL)
-	{
 		Angle(which, theta_e);
-		busy_state[which - 1] = FACEBALL;
-	}
-	else if (busy_state[which - 1] != IDLE && theta_e == 0)
-	{
-		busy_state[which - 1] = IDLE;
-	}
 }
 
 
-void CStrategySystem::idleStop(int which)
+// Kick the ball towards a certain point.
+void CStrategySystem::kickBall(int which)
 {
 	// TODO: Add your implementation code here.
+	static int state = 0;
 	Robot2 *robot;
-	int vL, vR;
+	int dy, dx, distance, phase, new_o, new_a, theta, desired_angle;
+	CPoint destination;
 
 	switch (which) {
 	case HOME1:
@@ -658,6 +669,47 @@ void CStrategySystem::idleStop(int which)
 		break;
 	}
 
-	vL = vR = 0;
-	if (busy_state == IDLE) Velocity(which, vL, vR);
+	dy = ball.position.y - robot->position.y;
+	dx = ball.position.x - robot->position.x;
+
+	if (dx == 0 && dy == 0)
+		desired_angle = 90;
+	else
+		desired_angle = (int)(180.0 / M_PI * atan2((double)(dy), (double)(dx)));
+
+	theta = desired_angle - robot->angle;
+
+	if (theta > 180)
+		theta -= 360;
+	if (theta < -180)
+		theta += 360;
+
+	distance = sqrt(dx * dx + dy * dy);
+
+	if (state == 0 && distance > 10)
+	{
+		Position(which, ball.position);
+	}
+
+	if (state == 0 && distance <= 10)
+	{
+		Stop(which);
+		state++;
+	}
+
+	if (state == 1 && theta != 0)
+	{
+		faceBall(which);
+	}
+
+	if (state == 1 && theta == 0)
+	{
+		Stop(which);
+		state++;
+	}
+
+	if (state == 2)
+	{
+		Velocity(which, 127, 127);
+	}
 }

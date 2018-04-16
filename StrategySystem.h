@@ -18,7 +18,7 @@ public:
 private:
 	void Stop(int which);
 	void Position(int which, CPoint point);
-	void NormalGame();
+	void KickOff();
 	void Velocity(int which, int vL, int vR);
 	void Angle(int which, int desired_angle);
 	void Goalie(int which);
@@ -50,14 +50,15 @@ private:
 	void Think();
 	void NormalGame4();
 	void NormalGame3();
-	void NormalGame2();
-	void NormalGame1();
+	void Defense1();
+	void Attack1();
 public:
 	int command[35]; 
 	
 private:
 	void faceBall(int which);
-	void idleStop(int which);
+	// Kick the ball towards a certain point.
+	void kickBall(int which);
 };
 
 #endif // _INSIDE_VISUAL_CPP_STRATEGYSYSTEM
