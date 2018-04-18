@@ -10,6 +10,12 @@ extern int nKick;
 #define  BALL_DIS	    26 
 #define  CORNER         115
 
+//Quadrant labels
+#define UP_RIGHT 1
+#define DOWN_LEFT -1
+#define UP_LEFT 2
+#define DOWN_RIGHT -2
+
 CStrategySystem::CStrategySystem(int id)
 {
 	m_OurTeam=id;
@@ -738,4 +744,107 @@ int CStrategySystem::faceToPoint(int which, CPoint target)
 	if (desired_angle != robot->angle)
 		Angle(which, desired_angle);
 	return 0;
+}
+
+
+
+int CStrategySystem::dribbleTo(int which, CPoint target)
+{
+	// TODO: Add your implementation code here.
+	Robot2 *robot;
+
+	switch (which) {
+	case HOME1:
+		robot = &home1;
+		break;
+	case HOME2:
+		robot = &home2;
+		break;
+	case HOME3:
+		robot = &home3;
+		break;
+	case HOME4:
+		robot = &home4;
+		break;
+	case HOME5:
+		robot = &home5;
+		break;
+	case HOME6:
+		robot = &home6;
+		break;
+	case HOME7:
+		robot = &home7;
+		break;
+	case HOME8:
+		robot = &home8;
+		break;
+	case HOME9:
+		robot = &home9;
+		break;
+	case HOME10:
+		robot = &home10;
+		break;
+	case HGOALIE:
+		robot = &hgoalie;
+		break;
+	}
+
+	static int state = 0;
+	int range = 10;
+
+	//If ball outside range
+	if (state == 0)
+	{
+		if (computeDistance(robot->position, ball.position) > range)
+		{
+			if (robot->angle == computeAngle(robot->position, ball.position))
+			{
+				Velocity(which, -127, -127);
+			}
+			else
+			{
+				faceBall(which);
+			}
+		}
+		else
+		{
+			Stop(which);
+			state = 1;
+		}
+	}
+
+	//If in correct quadrant
+	if (state == 1)
+	{
+		
+	}
+
+	return 0;
+}
+
+
+int CStrategySystem::reportQuadrant(CPoint source, CPoint centre)
+{
+	// TODO: Add your implementation code here.
+	int dy, dx, quadrant;
+
+	dy = source.y - centre.y;
+	dx = source.x - centre.x;
+
+	if (dy > 0) //Down
+	{
+		if (dx > 0) //Right
+			quadrant = DOWN_RIGHT;
+		else
+			quadrant = DOWN_LEFT;
+	}
+	else //Up
+	{
+		if (dx > 0) //Right
+			quadrant = UP_RIGHT;
+		else
+			quadrant = UP_LEFT;
+	}
+
+	return quadrant;
 }

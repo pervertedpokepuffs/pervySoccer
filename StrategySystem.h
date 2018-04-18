@@ -68,6 +68,8 @@ private:
 	int relativeDirection(CPoint source, CPoint target);
 	int facePoint(int which, CPoint target);
 	int faceToPoint(int which, CPoint target);
+	int dribbleTo(int which, CPoint target);
+	int reportQuadrant(CPoint source, CPoint centre);
 };
 
 #endif // _INSIDE_VISUAL_CPP_STRATEGYSYSTEM
