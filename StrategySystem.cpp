@@ -4,7 +4,6 @@
 IMPLEMENT_DYNAMIC(CStrategySystem, CObject)
 
 extern int nKick;
-int game_state = 0;
 
 #define  BALL_WIDTH		78
 #define  BALL_LENGTH	156 
@@ -15,7 +14,7 @@ CStrategySystem::CStrategySystem(int id)
 {
 	m_OurTeam=id;
 	boundRect.SetRect(65,95,965,723);
-	if(id)
+	if(id == 1)
 		m_nGameArea=GAME_LEFT;
 	else
 		m_nGameArea=GAME_RIGHT;
@@ -78,19 +77,19 @@ void CStrategySystem::Action()
 void CStrategySystem::Think()
 { 
 	static int state_switch = 0;
-	if (ball.position.x == 510 && ball.position.y == 411 && state_switch == 0)
+	if (ball.position.x == 520 && ball.position.y == 407 && state_switch == 0)
 	{
 		KickOff();
 	}
 
-	if (ball.position.x != 510 && ball.position.y != 411 && state_switch == 0)
+	if (ball.position.x != 520 && ball.position.y != 407 && state_switch == 0)
 	{
 		state_switch++;
 	}
 
 	if (state_switch != 0)
 	{
-		if (ball.position.x < 510)
+		if (ball.position.x > 520)
 		{
 			Attack1();
 		}
@@ -104,13 +103,16 @@ void CStrategySystem::Think()
 
 void CStrategySystem::KickOff()
 {
-	Velocity(HOME2, -127, -127);
+	Velocity(HOME2, -5, -5);
+	Position(HOME4, { 0,0 });
+	Position(HOME5, { 0,0 });
+	Position(HOME6, { 0,0 });
 }
 
 void CStrategySystem::Attack1()
 {
 	Stop(HOME2);
-	kickBall(HOME1);
+	kickBall(HOME1, -100);
 }
 
 
@@ -344,7 +346,6 @@ void CStrategySystem::ReceiveData(Robot1 bal,Robot2 ho1,Robot2 ho2,Robot2 ho3,Ro
 	if(m_nGameArea==GAME_RIGHT)
 	{
 		ball.position=bal.position;   
-		//추가
 		//ball.oldPosition=bal.oldPosition;
 		
 		home1.position=ho1.position;      
@@ -395,118 +396,53 @@ void CStrategySystem::ReceiveData(Robot1 bal,Robot2 ho1,Robot2 ho2,Robot2 ho3,Ro
 	}
 	else  
 	{
-		
-		ball.position.x=1030-bal.position.x;
-		ball.position.y=818-bal.position.y;
-	
-		//추가
+		ball.position = bal.position;
+		//ball.oldPosition = bal.oldPosition;
 
-		//ball.oldPosition.x = 1270-bal.oldPosition.x;
-		//ball.oldPosition.y = 1127-bal.oldPosition.y;
+		home1.position = ho1.position;
+		home1.angle = ho1.angle;
 
-		home1.position.x=1030-ho1.position.x;
-		home1.position.y=818-ho1.position.y;
-		if(home1.angle>0)
-			home1.angle=ho1.angle-180;
-		else
-			home1.angle   =180+ho1.angle;
-		home2.position.x=1030-ho2.position.x;
-		home2.position.y=818-ho2.position.y;
-		if(home2.angle>0)
-			home2.angle=ho2.angle-180;
-		else
-			home2.angle=180+ho2.angle;
-		home3.position.x=1030-ho3.position.x;
-		home3.position.y=818-ho3.position.y;
-		if(home3.angle>0)
-			home3.angle=ho3.angle-180;
-		else
-			home3.angle=180+ho3.angle;
-		home4.position.x=1030-ho4.position.x;
-		home4.position.y=818-ho4.position.y;
-		if(home4.angle>0)
-			home4.angle=ho4.angle-180;
-		else
-			home4.angle=180+ho4.angle;
-		home5.position.x=1030-ho5.position.x;
-		home5.position.y=818-ho5.position.y;
-		if(home5.angle>0)
-			home5.angle=ho5.angle-180;
-		else
-			home5.angle   =180+ho5.angle;
-		//*/
-		home6.position.x=1030-ho6.position.x;
-		home6.position.y=818-ho6.position.y;
-		///*
-		if(home6.angle>0)
-			home6.angle=ho6.angle-180;
-		else
-			home6.angle   =180+ho6.angle;
-		//*/
-		home7.position.x=1030-ho7.position.x;
-		home7.position.y=818-ho7.position.y;
-		///*
-		if(home7.angle>0)
-			home7.angle=ho7.angle-180;
-		else
-			home7.angle   =180+ho7.angle;
-		//*/
-		home8.position.x=1030-ho8.position.x;
-		home8.position.y=818-ho8.position.y;
-		///*
-		if(home8.angle>0)
-			home8.angle=ho8.angle-180;
-		else
-			home8.angle   =180+ho8.angle;
-		//*/
-		home9.position.x=1030-ho9.position.x;
-		home9.position.y=818-ho9.position.y;
-		///*
-		if(home9.angle>0)
-			home9.angle=ho9.angle-180;
-		else
-			home9.angle   =180+ho9.angle;
-		//*/
-		home10.position.x=1030-ho10.position.x;
-		home10.position.y=818-ho10.position.y;
-		///*
-		if(home10.angle>0)
-			home10.angle=ho10.angle-180;
-		else
-			home10.angle   =180+ho10.angle;
-		//*/
-		hgoalie.position.x=1030-hgo.position.x;
-		hgoalie.position.y=818-hgo.position.y;
-		///*
-		if(hgoalie.angle>0)
-			hgoalie.angle=hgo.angle-180;
-		else
-			hgoalie.angle=180+hgo.angle;
-		//*/
-		opponent.position1.x=1030-opp.position1.x;
-		opponent.position2.x=1030-opp.position2.x;
-		opponent.position3.x=1030-opp.position3.x;
-		opponent.position4.x=1030-opp.position4.x;
-		opponent.position5.x=1030-opp.position5.x;
-		opponent.position6.x=1030-opp.position6.x;
-		opponent.position7.x=1030-opp.position7.x;
-		opponent.position8.x=1030-opp.position8.x;
-		opponent.position9.x=1030-opp.position9.x;
-		opponent.position10.x=1030-opp.position10.x;
-		opponent.position11.x=1030-opp.position11.x;
+		home2.position = ho2.position;
+		home2.angle = ho2.angle;
 
-		opponent.position1.y=818-opp.position1.y;
-		opponent.position2.y=818-opp.position2.y;
-		opponent.position3.y=818-opp.position3.y;
-		opponent.position4.y=818-opp.position4.y;
-		opponent.position5.y=818-opp.position5.y;
-		opponent.position6.y=818-opp.position6.y;
-		opponent.position7.y=818-opp.position7.y;
-		opponent.position8.y=818-opp.position8.y;
-		opponent.position9.y=818-opp.position9.y;
-		opponent.position10.y=818-opp.position10.y;
-		opponent.position11.y=818-opp.position11.y;
-	
+		home3.position = ho3.position;
+		home3.angle = ho3.angle;
+
+		home4.position = ho4.position;
+		home4.angle = ho4.angle;
+
+		home5.position = ho5.position;
+		home5.angle = ho5.angle;
+
+		home6.position = ho6.position;
+		home6.angle = ho6.angle;
+
+		home7.position = ho7.position;
+		home7.angle = ho7.angle;
+
+		home8.position = ho8.position;
+		home8.angle = ho8.angle;
+
+		home9.position = ho9.position;
+		home9.angle = ho9.angle;
+
+		home10.position = ho10.position;
+		home10.angle = ho10.angle;
+
+		hgoalie.position = hgo.position;
+		hgoalie.angle = hgo.angle;
+
+		opponent.position1 = opp.position1;
+		opponent.position2 = opp.position2;
+		opponent.position3 = opp.position3;
+		opponent.position4 = opp.position4;
+		opponent.position5 = opp.position5;
+		opponent.position6 = opp.position6;
+		opponent.position7 = opp.position7;
+		opponent.position8 = opp.position8;
+		opponent.position9 = opp.position9;
+		opponent.position10 = opp.position10;
+		opponent.position11 = opp.position11;
 	}
 }
 
@@ -567,7 +503,8 @@ void CStrategySystem::Goalie(int which)
 void CStrategySystem::faceBall(int which)
 {
 	Robot2 *robot;
-	int theta_e, dy, dx, desired_angle;
+	double dy, dx;
+	int desired_angle;
 
 	switch (which) {
 	case HOME1:
@@ -611,26 +548,21 @@ void CStrategySystem::faceBall(int which)
 	if (dx == 0 && dy == 0)
 		desired_angle = 90;
 	else
-		desired_angle = (int)(180.0 / M_PI * atan2((double)(dy), (double)(dx)));
+		desired_angle = (180.0 / M_PI * atan2((double)(dy), (double)(dx)));
 
-	theta_e = desired_angle - robot->angle;
-
-	if (theta_e > 180)
-		theta_e -= 360;
-	if (theta_e < -180)
-		theta_e += 360;
-
-		Angle(which, theta_e);
+	if (desired_angle != robot->angle)
+		Angle(which, desired_angle);
 }
 
 
-// Kick the ball towards a certain point.
-void CStrategySystem::kickBall(int which)
+// Kick the ball with a velocity.
+void CStrategySystem::kickBall(int which, int velocity)
 {
 	// TODO: Add your implementation code here.
 	static int state = 0;
 	Robot2 *robot;
-	int dy, dx, distance, phase, new_o, new_a, theta, desired_angle;
+	int dy, dx, distance, desired_angle, robotAngle;
+	int theta;
 	CPoint destination;
 
 	switch (which) {
@@ -675,7 +607,9 @@ void CStrategySystem::kickBall(int which)
 	if (dx == 0 && dy == 0)
 		desired_angle = 90;
 	else
-		desired_angle = (int)(180.0 / M_PI * atan2((double)(dy), (double)(dx)));
+		desired_angle = (180.0 / M_PI * atan2((double)(dy), (double)(dx)));
+
+	robotAngle = robot->angle;
 
 	theta = desired_angle - robot->angle;
 
@@ -685,31 +619,66 @@ void CStrategySystem::kickBall(int which)
 		theta += 360;
 
 	distance = sqrt(dx * dx + dy * dy);
-
-	if (state == 0 && distance > 10)
+	
+	if (state == 0)
 	{
-		Position(which, ball.position);
+		if (abs(computeAngle(robot->position, ball.position) - robot->angle) > 20)
+			faceBall(which);
+		else
+			state = 1;
 	}
 
-	if (state == 0 && distance <= 10)
+	if (state == 1)
 	{
-		Stop(which);
-		state++;
-	}
-
-	if (state == 1 && theta != 0)
-	{
-		faceBall(which);
-	}
-
-	if (state == 1 && theta == 0)
-	{
-		Stop(which);
-		state++;
+		if (distance > 20)
+			Position(which, ball.position);
+		else
+			state = 2;
 	}
 
 	if (state == 2)
 	{
-		Velocity(which, 127, 127);
+		desired_angle = computeAngle(robot->position, ball.position);
+		
+		if (abs((int)(desired_angle - robot->angle)) > 20)
+			faceBall(which);
+		else
+			state = 3;
 	}
+
+	if (state == 3)
+	{
+		Velocity(which, velocity, velocity);
+	}
+}
+
+
+int CStrategySystem::computeDistance(CPoint source, CPoint target)
+{
+	// TODO: Add your implementation code here.
+	int distance, dy, dx;
+	dy = target.y - source.y;
+	dx = target.x - source.x;
+	distance = sqrt(dy * dy + dx * dx);
+	return distance;
+}
+
+
+int CStrategySystem::computeAngle(CPoint source, CPoint target)
+{
+	// TODO: Add your implementation code here.
+	int theta, dy, dx;
+	dy = source.y - target.y;
+	dx = source.x - target.x;
+	if (dx == 0 && dy == 0)
+		theta = 90;
+	else
+		theta = (int)(180.0 / M_PI * atan2((double)(dy), (double)(dx)));
+
+	if (theta > 180)
+		theta -= 360;
+	if (theta < -180)
+		theta += 360;
+
+	return theta;
 }

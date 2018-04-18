@@ -111,7 +111,6 @@ struct Robot2{
 	BYTE color[6];
 	BOOL bAlive; 
 	BYTE teamColor[6];
-	int busy_robot;
 
 	Robot2(){};
 	BOOL find(){return TRUE;};

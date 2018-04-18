@@ -2,6 +2,7 @@
 
 #ifndef _INSIDE_VISUAL_CPP_STRATEGYSYSTEM
 #define _INSIDE_VISUAL_CPP_STRATEGYSYSTEM
+
 class CStrategySystem : public CObject
 {
     DECLARE_DYNAMIC(CStrategySystem)
@@ -58,7 +59,9 @@ public:
 private:
 	void faceBall(int which);
 	// Kick the ball towards a certain point.
-	void kickBall(int which);
+	void kickBall(int which, int velocity);
+	int computeDistance(CPoint source, CPoint target);
+	int computeAngle(CPoint source, CPoint target);
 };
 
 #endif // _INSIDE_VISUAL_CPP_STRATEGYSYSTEM

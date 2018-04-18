@@ -95,8 +95,8 @@ void CMicroClientDoc::OnConnect()
 	DSetupDlg Dialog;
 
 	// ask the user for the name of the team and the server
-	Dialog.m_TeamName = _T("TeamName");
-	Dialog.m_ServerName = _T("ServerName");
+	Dialog.m_TeamName = _T("KonaChan");
+	Dialog.m_ServerName = _T("localhost");
 	Dialog.m_Channel = 6000;
 
 	// user can repeat with a different address
