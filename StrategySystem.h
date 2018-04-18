@@ -62,6 +62,12 @@ private:
 	void kickBall(int which, int velocity);
 	int computeDistance(CPoint source, CPoint target);
 	int computeAngle(CPoint source, CPoint target);
+	// Move the ball to a specific location.
+	int dribbleBall(int which, CPoint destination);
+	// //Return relative direction as per definition
+	int relativeDirection(CPoint source, CPoint target);
+	int facePoint(int which, CPoint target);
+	int faceToPoint(int which, CPoint target);
 };
 
 #endif // _INSIDE_VISUAL_CPP_STRATEGYSYSTEM

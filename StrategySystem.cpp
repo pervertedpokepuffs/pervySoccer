@@ -682,3 +682,60 @@ int CStrategySystem::computeAngle(CPoint source, CPoint target)
 
 	return theta;
 }
+
+
+int CStrategySystem::faceToPoint(int which, CPoint target)
+{
+	// TODO: Add your implementation code here.
+	Robot2 *robot;
+	double dy, dx;
+	int desired_angle;
+
+	switch (which) {
+	case HOME1:
+		robot = &home1;
+		break;
+	case HOME2:
+		robot = &home2;
+		break;
+	case HOME3:
+		robot = &home3;
+		break;
+	case HOME4:
+		robot = &home4;
+		break;
+	case HOME5:
+		robot = &home5;
+		break;
+	case HOME6:
+		robot = &home6;
+		break;
+	case HOME7:
+		robot = &home7;
+		break;
+	case HOME8:
+		robot = &home8;
+		break;
+	case HOME9:
+		robot = &home9;
+		break;
+	case HOME10:
+		robot = &home10;
+		break;
+	case HGOALIE:
+		robot = &hgoalie;
+		break;
+	}
+
+	dx = target.x - robot->position.x;
+	dy = target.y - robot->position.y;
+
+	if (dx == 0 && dy == 0)
+		desired_angle = 90;
+	else
+		desired_angle = (180.0 / M_PI * atan2((double)(dy), (double)(dx)));
+
+	if (desired_angle != robot->angle)
+		Angle(which, desired_angle);
+	return 0;
+}
