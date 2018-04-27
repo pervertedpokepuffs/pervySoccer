@@ -1,7 +1,17 @@
 #include "general.h"
+#include <algorithm>
 
 #ifndef _INSIDE_VISUAL_CPP_STRATEGYSYSTEM
 #define _INSIDE_VISUAL_CPP_STRATEGYSYSTEM
+
+class Positional {
+public:
+	double distance;
+	CPoint coor1;
+	CPoint coor2;
+
+
+};
 
 class CStrategySystem : public CObject
 {
@@ -18,7 +28,7 @@ public:
 #endif // _DEBUG
 private:
 	void Stop(int which);
-	void Position(int which, CPoint point);
+	void Position(int which, CPoint point, int max_v);
 	void KickOff();
 	void Velocity(int which, int vL, int vR);
 	void Angle(int which, int desired_angle);
@@ -63,13 +73,15 @@ private:
 	int computeDistance(CPoint source, CPoint target);
 	int computeAngle(CPoint source, CPoint target);
 	// Move the ball to a specific location.
-	int dribbleBall(int which, CPoint destination);
+	//int dribbleBall(int which, CPoint destination);
 	// //Return relative direction as per definition
-	int relativeDirection(CPoint source, CPoint target);
-	int facePoint(int which, CPoint target);
+	//int relativeDirection(CPoint source, CPoint target);
+	//int facePoint(int which, CPoint target);
 	int faceToPoint(int which, CPoint target);
-	int dribbleTo(int which, CPoint target);
 	int reportQuadrant(CPoint source, CPoint centre);
+	// Positioning with collision and wall avoidance
+	int smartPosition(int which, CPoint target, int max_velocity);
+	Positional reportEnemy(int which);
 };
 
 #endif // _INSIDE_VISUAL_CPP_STRATEGYSYSTEM
