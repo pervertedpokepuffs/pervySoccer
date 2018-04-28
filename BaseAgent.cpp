@@ -173,7 +173,7 @@ void CBaseAgent::ParseInit(LPCTSTR str)
 	// get the side
 	if ((msg.GetLength() > 6) && (msg.GetAt(6) == 'r'))
 	{
-		AfxMessageBox("right right");
+		AfxMessageBox("hello darkness my old friend");
 		SetSide(RIGHT_TO_LEFT);
 	}
 	else

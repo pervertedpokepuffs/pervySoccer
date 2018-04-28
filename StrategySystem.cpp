@@ -1003,8 +1003,16 @@ int CStrategySystem::smartPosition(int which, CPoint target, int max_velocity)
 	}
 	// TODO: Add your implementation code here.
 	static int state = 0;
-	int dist_closest, threshold = 10,dy,k,theta,x,y,dist,dxd,dx1,dx2;
-	CPoint coor1, coor2,interim;
+	int dist_closest, threshold = 30, dy, k, theta, theta_w, x, y, dist, dxd, dx1, dx2, wall_id = 0, dxw, dyw;
+	CPoint coor1, coor2, interim, interim_w;
+
+	//check for wall
+	if (robot->position.y < 20 || robot->position.y > 794 || robot->position.x < 20 || robot->position.x > 1020)
+	{
+		//Manage exceptions
+		if (!((robot->position.x < 20 || robot->position.x > 1020) && (robot->position.y > 311 || robot->position.y < 509)))
+			state = 2;
+	}
 
 	if (state = 0)
 	{
@@ -1033,16 +1041,27 @@ int CStrategySystem::smartPosition(int which, CPoint target, int max_velocity)
 		}
 		
 		dist = computeDistance(robot->position, coor1);
-		interim.x = coor1.x + dist  * cos(theta) * (PI/180);
-		interim.y = coor1.y + dist  * sin(theta) * (PI/180);
+		interim.x = coor1.x + dist  * cos(theta * PI/180);
+		interim.y = coor1.y + dist  * sin(theta * PI/180);
 
 		if (dy < 0)
 		{
-			interim.y += 5;
+			interim.y += 13;
 		}
 		else
 		{
-			interim.y -= 5;
+			interim.y -= 13;
+		}
+
+		dx2 = target.x - coor1.x;
+
+		if (dx2 > 0)
+		{
+			interim.x += 10;
+		}
+		else
+		{
+			interim.x -= 10;
 		}
 
 		dx1 = target.x - robot->position.x;
@@ -1057,6 +1076,64 @@ int CStrategySystem::smartPosition(int which, CPoint target, int max_velocity)
 		{
 			state = 0;
 		}
+	}
+
+	//State 2: wall correction
+	if (state == 2)
+	{
+		//Convert position to wall_id for general actions for wall
+		if (robot->position.y < 20)			wall_id = 1; //N
+		else if (robot->position.x > 1020)	wall_id = 2; //E
+		else if (robot->position.y > 794)	wall_id = 3; //S
+		else if (robot->position.x < 20)	wall_id = 4; //W
+
+		//Switch for responses to respective walls
+		switch (wall_id)
+		{
+		case 1:
+			dxw = target.x - robot->position.x;
+			//Manage dxw = 0
+			if (dxw == 0)	theta_w = 90;
+			else
+			{
+				if (dxw > 0)	theta_w = 45;
+				else			theta_w = 135;
+			}
+			break;
+
+		case 2:
+			dyw = 407 - robot->position.y;
+			if (dyw < 0)	theta_w = 135;
+			else			theta_w = -135;
+			break;
+
+		case 3:
+			dxw = target.x - robot->position.x;
+			//Manage dxw = 0
+			if (dxw == 0)	theta_w = -90;
+			else
+			{
+				if (dxw > 0)	theta_w = -45;
+				else			theta_w = -135;
+			}
+			break;
+
+		case 4:
+			dyw = 407 - robot->position.y;
+			if (dyw < 0)	theta_w = 45;
+			else			theta_w = -45;
+			break;
+
+		default:
+			break;
+		}
+
+		interim_w.x = robot->position.x + 20 * cos(theta_w * PI/180);
+		interim_w.y = robot->position.y + 20 * sin(theta_w * PI / 180);
+
+		Position(which, interim_w, 127);
+
+		if (!(robot->position.y < 20 || robot->position.y > 794 || robot->position.x < 20 || robot->position.x > 1020))		state = 0;
 	}
 
 	return 0;
